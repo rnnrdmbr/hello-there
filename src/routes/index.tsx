@@ -143,7 +143,7 @@ function Index() {
   const legalCopy = {
     privacidade: {
       title: "Política de Privacidade",
-      body: "Esta página é uma demonstração de uma landing page. Os dados enviados pelo formulário existem apenas para ilustrar o fluxo de contato. Na implantação real, devem ser definidos e publicados o responsável pelo tratamento, os dados coletados, as finalidades, a base legal, o período de retenção, os canais para solicitações de exclusão e demais informações exigidas pela legislação aplicável. Nenhum prazo ou processo real é afirmado aqui sem configuração da operação.",
+      body: "Esta página é uma demonstração de uma landing page. O formulário coleta nome, e-mail e WhatsApp apenas para ilustrar um pedido de contato. A finalidade prevista é responder à solicitação e, somente quando configurado e autorizado, realizar comunicações relacionadas ao atendimento. O período de retenção e o canal operacional para solicitar exclusão não estão definidos neste protótipo e devem ser preenchidos pelo responsável antes da publicação. Na implantação real também devem ser definidos o responsável pelo tratamento, a base legal e as demais informações exigidas pela legislação aplicável.",
     },
     cookies: {
       title: "Política de Cookies",
