@@ -57,6 +57,7 @@ function trackEvent(eventName: string, parameters?: Record<string, string>) {
 
 function Index() {
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [formStatus, setFormStatus] = useState<FormStatus>("idle");
   const [formError, setFormError] = useState("");
   const [consent, setConsent] = useState(false);
@@ -69,6 +70,17 @@ function Index() {
   };
 
   useEffect(() => {
+    let frame = 0;
+    const updateProgress = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        setScrollProgress(max > 0 ? window.scrollY / max : 0);
+      });
+    };
+    updateProgress();
+    window.addEventListener("scroll", updateProgress, { passive: true });
+
     const items = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
     const observer = new IntersectionObserver(
       entries => {
@@ -83,7 +95,11 @@ function Index() {
     );
     items.forEach(item => observer.observe(item));
     trackEvent("PageView");
-    return () => observer.disconnect();
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", updateProgress);
+      observer.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -154,7 +170,8 @@ function Index() {
   } as const;
 
   return (
-    <main className="pet-site">
+    <main className="pet-site" style={{ "--scroll-progress": scrollProgress } as React.CSSProperties}>
+      <div className="scroll-progress" aria-hidden="true" />
       <header className="site-header">
         <div className="site-header__inner">
           <button className="brand" onClick={() => scrollTo("inicio")} type="button" aria-label="Pata & Cia, início">
@@ -178,17 +195,18 @@ function Index() {
             <button className="text-link" type="button" onClick={() => scrollTo("cuidados")}>Conhecer nossos cuidados <ArrowRight size={16} /></button>
           </div>
           <div className="hero__note"><ShieldCheck size={16} /> Atendimento com rotina organizada, contato próximo e ambiente acolhedor.</div>
+          <button className="hero__scroll-cue" type="button" onClick={() => scrollTo("sobre")} aria-label="Ir para a nossa forma de cuidar"><span>deslize para conhecer</span><i aria-hidden="true" /></button>
         </div>
 
         <div className="hero__visual reveal">
-          <div className="hero__image-wrap">
+          <div className="hero__image-wrap"><span className="hero__image-caption" aria-hidden="true">A rotina também pode ser leve.</span>
             <img src={images.hero} alt="Cachorro em um ambiente claro e acolhedor" width="1200" height="1463" fetchPriority="high" decoding="async" />
             <div className="hero__seal"><span>cuidado</span><strong>próximo</strong><span>todos os dias</span></div>
           </div>
         </div>
       </section>
 
-      <section className="pillars" aria-label="Diferenciais">
+      <section className="pillars" aria-label="Diferenciais"><div className="motion-band" aria-hidden="true"><span>acolhimento</span><b>•</b><span>rotina</span><b>•</b><span>bem-estar</span><b>•</b><span>presença</span><b>•</b><span>acolhimento</span><b>•</b><span>rotina</span><b>•</b><span>bem-estar</span><b>•</b><span>presença</span></div>
         <div className="pillars__inner">
           {[
             ["01", "Rotina tranquila", "Atendimento pensado para reduzir estresse e correria."],
@@ -199,7 +217,7 @@ function Index() {
         </div>
       </section>
 
-      <section id="sobre" className="story section-pad">
+      <section id="sobre" className="story section-pad"><div className="section-index" aria-hidden="true">02</div>
         <div className="story__image reveal">
           <img src={images.story} alt="Cachorro recebendo carinho durante um momento de cuidado" width="1100" height="1410" loading="lazy" decoding="async" />
           <span>FEITO PARA ELES. PENSADO PARA VOCÊ.</span>
@@ -214,7 +232,7 @@ function Index() {
         <div className="story__art" aria-hidden="true"><div className="art-sun" /><div className="art-hills" /><div className="art-house" /><div className="art-tree art-tree--one" /><div className="art-tree art-tree--two" /><div className="art-paw">🐾</div></div>
       </section>
 
-      <section id="cuidados" className="services section-pad">
+      <section id="cuidados" className="services section-pad"><div className="section-index section-index--right" aria-hidden="true">03</div>
         <div className="section-heading reveal">
           <div><p className="eyebrow">Cuidados que fazem sentido</p><h2>Do básico ao especial,<br /><em>sem exagero.</em></h2></div>
           <p>Uma seleção de serviços para acompanhar a rotina do seu pet com mais conforto, organização e atenção.</p>
@@ -227,7 +245,7 @@ function Index() {
         </div>
       </section>
 
-      <section id="depoimentos" className="testimonials section-pad">
+      <section id="depoimentos" className="testimonials section-pad"><div className="testimonial-line" aria-hidden="true" />
         <div className="testimonials__intro reveal"><p className="eyebrow">De quem já conhece</p><h2>“Cuidado” também aparece<br /><em>na forma de atender.</em></h2></div>
         <div className="testimonial-grid">
           {testimonials.map(([name, detail, quote], index) => <article className="testimonial reveal" key={name}>
@@ -245,7 +263,7 @@ function Index() {
         </div>
       </section>
 
-      <section id="faq" className="faq section-pad">
+      <section id="faq" className="faq section-pad"><div className="section-index" aria-hidden="true">05</div>
         <div className="faq__heading reveal"><p className="eyebrow">Antes de vir</p><h2>Algumas respostas<br /><em>para facilitar.</em></h2></div>
         <div className="faq__list">
           {faqs.map(([question, answer], index) => {
@@ -258,7 +276,7 @@ function Index() {
         </div>
       </section>
 
-      <section id="contato" className="contact section-pad" ref={contactSectionRef}>
+      <section id="contato" className="contact section-pad" ref={contactSectionRef}><div className="contact__kicker" aria-hidden="true">06 · contact</div>
         <div className="contact__image reveal"><img src={images.dayCare} alt="Dois cães em um espaço aberto e tranquilo" width="1000" height="1250" loading="lazy" decoding="async" /></div>
         <div className="contact__copy reveal">
           <p className="eyebrow">Fale com a gente</p>
