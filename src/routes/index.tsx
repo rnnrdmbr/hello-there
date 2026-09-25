@@ -15,7 +15,21 @@ import {
   X,
 } from "lucide-react";
 
-export const Route = createFileRoute("/")({ component: Index });
+export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Pata & Cia — Pet Care em Nova Friburgo" },
+      { name: "description", content: "Cuidado próximo para pets, com banho e tosa, day care e acompanhamento em Nova Friburgo." },
+      { property: "og:title", content: "Pata & Cia — Pet Care em Nova Friburgo" },
+      { property: "og:description", content: "Mais carinho na rotina. Mais tranquilidade para você." },
+      { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=1200&q=82&fm=webp" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=1200&q=82&fm=webp" },
+    ],
+  }),
+  component: Index,
+});
 
 const images = {
   hero: "https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=1200&q=82&fm=webp",
@@ -57,13 +71,13 @@ function trackEvent(eventName: string, parameters?: Record<string, string>) {
 
 function Index() {
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const [formStatus, setFormStatus] = useState<FormStatus>("idle");
   const [formError, setFormError] = useState("");
   const [consent, setConsent] = useState(false);
   const [legalDoc, setLegalDoc] = useState<LegalDoc>(null);
   const [cookiesVisible, setCookiesVisible] = useState(true);
   const contactSectionRef = useRef<HTMLElement | null>(null);
+  const siteRef = useRef<HTMLElement | null>(null);
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -75,13 +89,21 @@ function Index() {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         const max = document.documentElement.scrollHeight - window.innerHeight;
-        setScrollProgress(max > 0 ? window.scrollY / max : 0);
+        siteRef.current?.style.setProperty("--scroll-progress", String(max > 0 ? window.scrollY / max : 0));
       });
     };
     updateProgress();
     window.addEventListener("scroll", updateProgress, { passive: true });
 
     const items = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
+    siteRef.current?.classList.add("reveal-ready");
+    if (!("IntersectionObserver" in window)) {
+      items.forEach(item => item.classList.add("is-visible"));
+      return () => {
+        cancelAnimationFrame(frame);
+        window.removeEventListener("scroll", updateProgress);
+      };
+    }
     const observer = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
@@ -93,7 +115,11 @@ function Index() {
       },
       { threshold: 0.14, rootMargin: "0px 0px -40px" },
     );
-    items.forEach(item => observer.observe(item));
+    items.forEach(item => {
+      const rect = item.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) item.classList.add("is-visible");
+      else observer.observe(item);
+    });
     trackEvent("PageView");
     return () => {
       cancelAnimationFrame(frame);
@@ -170,7 +196,7 @@ function Index() {
   } as const;
 
   return (
-    <main className="pet-site" style={{ "--scroll-progress": scrollProgress } as React.CSSProperties}>
+    <main className="pet-site" ref={siteRef}>
       <div className="scroll-progress" aria-hidden="true" />
       <header className="site-header">
         <div className="site-header__inner">
