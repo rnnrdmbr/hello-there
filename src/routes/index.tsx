@@ -56,7 +56,6 @@ function trackEvent(eventName: string, parameters?: Record<string, string>) {
 }
 
 function Index() {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
   const [formStatus, setFormStatus] = useState<FormStatus>("idle");
   const [formError, setFormError] = useState("");
@@ -66,7 +65,6 @@ function Index() {
   const contactSectionRef = useRef<HTMLElement | null>(null);
 
   const scrollTo = (id: string) => {
-    setMenuOpen(false);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -164,35 +162,10 @@ function Index() {
             <span><strong>PATA & CIA</strong><small>pet care</small></span>
           </button>
 
-          <nav className="desktop-nav" aria-label="Navegação principal">
-            {[
-              ["Início", "inicio"],
-              ["Nossa história", "sobre"],
-              ["Cuidados", "cuidados"],
-              ["Depoimentos", "depoimentos"],
-              ["FAQ", "faq"],
-            ].map(([label, id]) => <button key={id} type="button" onClick={() => scrollTo(id)}>{label}</button>)}
-          </nav>
-
-          <button className="header-cta" type="button" onClick={openContact}>
+            <button className="header-cta" type="button" onClick={openContact}>
             Falar com a equipe <ArrowRight size={16} aria-hidden="true" />
           </button>
-
-          <button className="mobile-menu-button" type="button" onClick={() => setMenuOpen(v => !v)} aria-expanded={menuOpen} aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}>
-            {menuOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
         </div>
-
-        {menuOpen && <nav className="mobile-nav" aria-label="Navegação móvel">
-          {[
-            ["Início", "inicio"],
-            ["Nossa história", "sobre"],
-            ["Cuidados", "cuidados"],
-            ["Depoimentos", "depoimentos"],
-            ["FAQ", "faq"],
-          ].map(([label, id]) => <button key={id} type="button" onClick={() => scrollTo(id)}>{label}</button>)}
-          <button className="mobile-nav__cta" type="button" onClick={openContact}>Falar com a equipe <ArrowRight size={16} /></button>
-        </nav>}
       </header>
 
       <section id="inicio" className="hero section-pad">
