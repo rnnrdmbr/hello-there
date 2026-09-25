@@ -1,0 +1,12 @@
+{
+  "name": "Pata & Cia — Pet Care",
+  "short_name": "Pata & Cia",
+  "lang": "pt-BR",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fcfaf6",
+  "theme_color": "#536042",
+  "icons": [
+    { "src": "/paw.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
