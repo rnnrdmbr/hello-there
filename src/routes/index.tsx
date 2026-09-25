@@ -198,7 +198,7 @@ function Index() {
           <button className="hero__scroll-cue" type="button" onClick={() => scrollTo("sobre")} aria-label="Ir para a nossa forma de cuidar"><span>deslize para conhecer</span><i aria-hidden="true" /></button>
         </div>
 
-        <div className="hero__visual reveal">
+        <div className="hero__visual reveal" onPointerMove={(event) => { const rect = event.currentTarget.getBoundingClientRect(); const x = (event.clientX - rect.left) / rect.width - 0.5; const y = (event.clientY - rect.top) / rect.height - 0.5; const image = event.currentTarget.querySelector<HTMLElement>(".hero__image-wrap"); if (image) { image.style.setProperty("--parallax-x", `${x * -8}px`); image.style.setProperty("--parallax-y", `${y * -8}px`); } }} onPointerLeave={(event) => { const image = event.currentTarget.querySelector<HTMLElement>(".hero__image-wrap"); if (image) { image.style.setProperty("--parallax-x", "0px"); image.style.setProperty("--parallax-y", "0px"); } }}>
           <div className="hero__image-wrap"><span className="hero__image-caption" aria-hidden="true">A rotina também pode ser leve.</span>
             <img src={images.hero} alt="Cachorro em um ambiente claro e acolhedor" width="1200" height="1463" fetchPriority="high" decoding="async" />
             <div className="hero__seal"><span>cuidado</span><strong>próximo</strong><span>todos os dias</span></div>
@@ -206,7 +206,7 @@ function Index() {
         </div>
       </section>
 
-      <section className="pillars" aria-label="Diferenciais"><div className="motion-band" aria-hidden="true"><span>acolhimento</span><b>•</b><span>rotina</span><b>•</b><span>bem-estar</span><b>•</b><span>presença</span><b>•</b><span>acolhimento</span><b>•</b><span>rotina</span><b>•</b><span>bem-estar</span><b>•</b><span>presença</span></div>
+      <section className="pillars" aria-label="Diferenciais"><div className="motion-band" aria-hidden="true"><div className="motion-band__track"><span>acolhimento</span><b>•</b><span>rotina</span><b>•</b><span>bem-estar</span><b>•</b><span>presença</span><b>•</b><span>acolhimento</span><b>•</b><span>rotina</span><b>•</b><span>bem-estar</span><b>•</b><span>presença</span></div></div>
         <div className="pillars__inner">
           {[
             ["01", "Rotina tranquila", "Atendimento pensado para reduzir estresse e correria."],
